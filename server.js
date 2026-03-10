@@ -24,8 +24,13 @@ app.get("/outfits", async (req, res) => {
             }
         });
 
-        const raw = await response.text(); // JSON değil, ham text
-        return res.json({ success: true, status: response.status, raw: raw });
+        const data = await response.json();
+       return res.json({
+       success: true,
+        total: data.total || 0,
+        filteredCount: data.filteredCount || 0,
+       data: data.data || []
+      });
 
     } catch (err) {
         return res.json({ success: false, error: err.message });
