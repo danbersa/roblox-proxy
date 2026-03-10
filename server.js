@@ -94,6 +94,20 @@ app.get("/userid", async (req, res) => {
     }
 });
 
+app.get("/test", async (req, res) => {
+    try {
+        const response = await fetch("https://users.roblox.com/v1/users/authenticated", {
+            headers: {
+                "Cookie": `.ROBLOSECURITY=${COOKIE}`
+            }
+        });
+        const data = await response.json();
+        return res.json({ success: true, data: data });
+    } catch (err) {
+        return res.json({ success: false, error: err.message });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
