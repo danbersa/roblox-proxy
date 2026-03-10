@@ -15,22 +15,17 @@ app.get("/outfits", async (req, res) => {
 
     try {
         const url = `https://avatar.roblox.com/v1/users/${userId}/outfits?itemsPerPage=100&page=${page}`;
-
+        
         const response = await fetch(url, {
             headers: {
                 "Cookie": `.ROBLOSECURITY=${COOKIE}`,
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "User-Agent": "Mozilla/5.0"
             }
         });
 
-        const data = await response.json();
-
-        return res.json({
-            success: true,
-            total: data.total || 0,
-            filteredCount: data.filteredCount || 0,
-            data: data.data || []
-        });
+        const raw = await response.text(); // JSON değil, ham text
+        return res.json({ success: true, status: response.status, raw: raw });
 
     } catch (err) {
         return res.json({ success: false, error: err.message });
