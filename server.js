@@ -14,7 +14,7 @@ app.get("/outfits", async (req, res) => {
     }
 
     try {
-        const url = `https://avatar.roblox.com/v1/users/${userId}/outfits?itemsPerPage=100&page=${page}`;
+        const url = `https://avatar.roblox.com/v1/users/${userId}/outfits?itemsPerPage=100&outfitType=Avatar&page=${page}`;
         
         const response = await fetch(url, {
             headers: {
