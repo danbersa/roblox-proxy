@@ -1,6 +1,5 @@
 const express = require("express");
 const fetch = require("node-fetch");
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 const COOKIE = process.env.ROBLOSECURITY;
@@ -15,24 +14,33 @@ app.get("/outfits", async (req, res) => {
 
     try {
         const url = `https://avatar.roblox.com/v1/users/${userId}/outfits?itemsPerPage=100&outfitType=Avatar&page=${page}`;
-        
+        console.log("Fetching URL:", url);
+        console.log("Cookie exists:", !!COOKIE);
+        console.log("Cookie length:", COOKIE ? COOKIE.length : 0);
+
         const response = await fetch(url, {
             headers: {
                 "Cookie": `.ROBLOSECURITY=${COOKIE}`,
                 "Content-Type": "application/json",
-                "User-Agent": "Mozilla/5.0"
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
             }
         });
 
-        const data = await response.json();
-       return res.json({
-       success: true,
-        total: data.total || 0,
-        filteredCount: data.filteredCount || 0,
-       data: data.data || []
-      });
+        console.log("Response status:", response.status);
+        const raw = await response.text();
+        console.log("Raw response:", raw);
+
+        const data = JSON.parse(raw);
+        return res.json({
+            success: true,
+            total: data.total || 0,
+            filteredCount: data.filteredCount || 0,
+            data: data.data || []
+        });
 
     } catch (err) {
+        console.log("Error:", err.message);
         return res.json({ success: false, error: err.message });
     }
 });
@@ -55,7 +63,6 @@ app.get("/outfitdetails", async (req, res) => {
         });
 
         const data = await response.json();
-
         return res.json({ success: true, data: data });
 
     } catch (err) {
@@ -101,8 +108,10 @@ app.get("/test", async (req, res) => {
                 "Cookie": `.ROBLOSECURITY=${COOKIE}`
             }
         });
+
         const data = await response.json();
         return res.json({ success: true, data: data });
+
     } catch (err) {
         return res.json({ success: false, error: err.message });
     }
